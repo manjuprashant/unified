@@ -1,0 +1,40 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: unified-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: unified_provisioning
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: unified-keycloak
+    restart: unless-stopped
+
+    command:
+      - start-dev
+
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin123
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - postgres
+
+
+volumes:
+  postgres_data:
